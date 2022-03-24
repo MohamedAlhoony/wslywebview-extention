@@ -113,38 +113,9 @@ const Home = () => {
 
     return (
         <Container>
-            {isLoadingDetails ? (
-                <Row className={'py-5'}>
-                    <Col className={'d-flex justify-content-center'}>
-                        <Spinner
-                            variant="primary"
-                            animation="border"
-                            role="status"
-                        >
-                            <span className="visually-hidden"></span>
-                        </Spinner>
-                    </Col>
-                </Row>
-            ) : (
-                <Row className="d-flex justify-content-center py-3">
-                    <Col xs={'12'} lg={'6'}>
-                        <ItemTable itemDetails={itemDetails} />
-                    </Col>
-                </Row>
-            )}
-            {isLoadingErrorSubmit && (
-                <Row className="d-flex justify-content-center ">
-                    <Col xs={'12'} lg={'6'} className={'my-2'}>
-                        <Alert variant="danger">
-                            <h5>فشل تحميل البيانات</h5>
-                        </Alert>
-                    </Col>
-                </Row>
-            )}
-
-            <Row className="d-flex justify-content-center mb-5">
+            <Row className="d-flex justify-content-center my-4">
                 <Col xs={'12'} lg={'6'}>
-                    <Form>
+                    <Form as={Row}>
                         {isLoadingSubmit && (
                             <div className={'submit_spinner_wrapper'}>
                                 <Spinner animation="grow" variant="primary" />
@@ -153,19 +124,44 @@ const Home = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>رقم الهاتف:</Form.Label>
                             <Form.Control
+                                pattern="\d{1,5}"
                                 value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                type="number"
-                                placeholder=""
+                                onChange={(e) => {
+                                    if (!/^(\s*|\d+)$/.test(e.target.value)) {
+                                        return
+                                    }
+                                    setPhoneNumber(e.target.value)
+                                }}
+                                dir={'ltr'}
+                                placeholder="218 91 xxx xx xx"
+                                type="text"
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3">
+                        {isLoadingDetails ? (
+                            <Col
+                                xs={'12'}
+                                className={'d-flex justify-content-center my-3'}
+                            >
+                                <Spinner
+                                    variant="primary"
+                                    animation="border"
+                                    role="status"
+                                >
+                                    <span className="visually-hidden"></span>
+                                </Spinner>
+                            </Col>
+                        ) : (
+                            <Col xs={'12'}>
+                                <ItemTable itemDetails={itemDetails} />
+                            </Col>
+                        )}
+
+                        <Form.Group style={{ width: '10rem' }} className="mb-3">
                             <Form.Label>الكمية:</Form.Label>
                             <Form.Control
                                 value={qty}
                                 onChange={(e) => setQty(e.target.value)}
                                 type="number"
-                                placeholder=""
                             />
                         </Form.Group>
                         <Form.Group className="mb-3">
@@ -174,6 +170,7 @@ const Home = () => {
                                 value={desc}
                                 onChange={(e) => setDesc(e.target.value)}
                                 as={'textarea'}
+                                rows={4}
                                 type="text"
                                 placeholder="الوصف"
                             />
@@ -189,6 +186,15 @@ const Home = () => {
                                 label="مع التوصيل"
                             />
                         </Form.Group>
+                        {isLoadingErrorSubmit && (
+                            <Col xs={'12'} className={'my-2'}>
+                                <Alert variant="danger">
+                                    <h5>
+                                        فشلت العملية , تأكد من اتصالك بالانترنت
+                                    </h5>
+                                </Alert>
+                            </Col>
+                        )}
                         <div className={'d-grid gap-2'}>
                             <Button
                                 disabled={phoneNumber === '' || qty === ''}
