@@ -115,7 +115,7 @@ const Home = () => {
         <Container>
             <Row className="d-flex justify-content-center my-4">
                 <Col xs={'12'} lg={'6'}>
-                    <Form as={Row}>
+                    <Form style={{ position: 'relative' }} as={Row}>
                         {isLoadingSubmit && (
                             <div className={'submit_spinner_wrapper'}>
                                 <Spinner animation="grow" variant="primary" />
@@ -124,7 +124,6 @@ const Home = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>رقم الهاتف:</Form.Label>
                             <Form.Control
-                                pattern="\d{1,5}"
                                 value={phoneNumber}
                                 onChange={(e) => {
                                     if (!/^(\s*|\d+)$/.test(e.target.value)) {
@@ -160,13 +159,24 @@ const Home = () => {
                             <Form.Label>الكمية:</Form.Label>
                             <Form.Control
                                 value={qty}
-                                onChange={(e) => setQty(e.target.value)}
+                                min={1}
+                                onChange={(e) => {
+                                    if (
+                                        !/^[+]?\d+([.]\d+)?$/.test(
+                                            e.target.value
+                                        )
+                                    ) {
+                                        return
+                                    }
+                                    setQty(e.target.value)
+                                }}
                                 type="number"
                             />
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>الوصف:</Form.Label>
                             <Form.Control
+                                maxLength={120}
                                 value={desc}
                                 onChange={(e) => setDesc(e.target.value)}
                                 as={'textarea'}
@@ -190,7 +200,8 @@ const Home = () => {
                             <Col xs={'12'} className={'my-2'}>
                                 <Alert variant="danger">
                                     <h5>
-                                        فشلت العملية , تأكد من اتصالك بالانترنت
+                                        فشلت العملية , تأكد من البيانات المدخلة
+                                        و اتصالك بالانترنت
                                     </h5>
                                 </Alert>
                             </Col>
